@@ -1,6 +1,8 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import FilterTodoModel 1.0
+import QtQuick.Dialogs 1.2
+
 Item {
     id: innerSpace
     anchors.fill: parent
@@ -40,6 +42,7 @@ Item {
         anchors{
             fill: parent
             topMargin: newTaskPanel.height + filterTextField.height + 2 * innerSpace.anchors.margins
+            bottomMargin: saveButton.height + innerSpace.anchors.margins
         }
         spacing : innerSpace.anchors.margins
         model: FilterTodoModel{ id: filterTodoModel}
@@ -49,6 +52,14 @@ Item {
             onRemoveMe: filterTodoModel.model.removeItem(index)
             onEditMe: colorSelector.currentRow = index
         }
+    }
+    Button{
+        id:saveButton
+        width: parent.width
+        anchors.bottom: parent.bottom
+        text: qsTr("Save")
+        background: Rectangle {color: "#e0e0e0"; radius: 5;}
+        onClicked: filterTodoModel.saveToFile()
     }
 
     ColorSelector{

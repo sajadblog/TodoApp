@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQuickView>
 
+namespace Todo {
 class TodoApp : public QObject
 {
     Q_OBJECT
@@ -16,5 +17,6 @@ private :
 signals:
 
 };
+}
 
 #endif // TODOAPP_H

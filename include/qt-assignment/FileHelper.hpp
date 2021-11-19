@@ -35,4 +35,20 @@ namespace bi
 
         qInfo() << "Save complete!";
     }
+
+    /**
+     * @brief load text content from a file
+     * @return the content of location file
+     * @param location the full path of the file that need to load, such as /path/to/filename.extension
+     */
+    QString loadFromFileSlow(const QString &location)
+    {
+        qInfo() << "Loading from " << location << " ..." ;
+
+        QFile file(location);
+        if(file.open(QIODevice::ReadOnly)){
+            return file.readAll();
+        }
+        return "";
+    }
 }

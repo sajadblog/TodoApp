@@ -6,23 +6,25 @@ Item{
     signal removeMe()
     signal editMe()
 
-    height: priorityButton.height + innerSpace.anchors.margins
+    height: descriptionTextField.height + innerSpace.anchors.margins
     Rectangle {
         anchors.fill: parent
         anchors.rightMargin: rightToolBarPanel.width + innerSpace.anchors.margins
         border.width: 2
         border.color: "Gold"
-        color: background
+        color: completed ? "lightGray" : background
         Row{
             spacing: innerSpace.anchors.margins
             anchors.fill: parent
             anchors.rightMargin: innerSpace.anchors.margins
-            TextField{
+            TextArea{
+                id: descriptionTextField
                 width: parent.width - priorityButton.width - seperator.width - (parent.children.length - 1) * parent.spacing
-                height: parent.height
                 background: null
                 text: description
                 onTextChanged: description = text
+                enabled: !completed
+                wrapMode: TextEdit.Wrap
                 Component.onCompleted: text = description
             }
             Rectangle{
@@ -35,13 +37,17 @@ Item{
             ComboBox{
                 id: priorityButton
                 width: 100
-                height: 30
+                enabled: !completed
+                height: parent.height - innerSpace.anchors.margins
                 anchors.verticalCenter: parent.verticalCenter
                 model: ["NONE", "LOW", "MEDIUM", "HIGH"]
-                currentIndex: priority
                 background: Rectangle {color: "#e0e0e0";}
                 indicator: Item{}
-                onCurrentIndexChanged: priority = currentIndex
+                Component.onCompleted: {
+                    currentIndex = priority
+                    priority = Qt.binding(function() { return currentIndex })
+                }
+
             }
         }
     }
@@ -54,8 +60,8 @@ Item{
             spacing: innerSpace.anchors.margins
             CheckBox{
                 id: completedCheckBox
-                checkState: completed ? Qt.Checked : Qt.Unchecked
-                onCheckStateChanged: completed = checkState == Qt.Checked
+                onCheckStateChanged: completed = (checkState == Qt.Checked)
+                Component.onCompleted: checkState = completed ? Qt.Checked : Qt.Unchecked
             }
             Button{
                 id: removeButton
@@ -66,6 +72,7 @@ Item{
             }
             Image{
                 id: editButton
+                enabled: !completed
                 anchors.verticalCenter: parent.verticalCenter
                 source: "qrc:/resources/edit.png"
                 MouseArea{

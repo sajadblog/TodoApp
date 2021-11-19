@@ -1,13 +1,21 @@
 #include "TodoModel.h"
+#include "include/qt-assignment/FileHelper.hpp"
 
 #include <QColor>
 #include <QDebug>
+#include <QFileInfo>
+#include <QDir>
+#include <QtConcurrent>
 
+namespace Todo {
+const QString saveFileAddress = QDir::currentPath() + QDir::separator() + "saveFile.csv";
 TodoModel::TodoModel(QObject *parent) : QAbstractListModel(parent)
 {
-    m_dataContainer.append({eTodoPriority::medium,false,"test to od item", "white"});
-    m_dataContainer.append({eTodoPriority::none,true,"item2", "#d3d3d3"});
-    m_dataContainer.append({eTodoPriority::low,false,"lorem ipsum", "#90ee90"});
+//    m_dataContainer.append({eTodoPriority::medium,false,"test to od item", "white"});
+//    m_dataContainer.append({eTodoPriority::none,true,"item2", "#d3d3d3"});
+//    m_dataContainer.append({eTodoPriority::low,false,"lorem ipsum", "#90ee90"});
+
+
 }
 
 QHash<int, QByteArray> TodoModel::roleNames() const
@@ -71,6 +79,7 @@ bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int rol
     case eFieldRoles::DescriptionRole   :  m_dataContainer[index.row()].description = value.toString();break;
     case eFieldRoles::BackgroundRole    :  m_dataContainer[index.row()].backgroundColor = value.toString();break;
     }
+    emit dataChanged(index,index,{role});
     return true;
 }
 
@@ -78,6 +87,7 @@ FilterTodoModel::FilterTodoModel(QObject *parent):
     QSortFilterProxyModel(parent)
 {
     setSourceModel(&m_todoModel);
+    loadFromFile();
 }
 
 bool FilterTodoModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -108,4 +118,26 @@ void FilterTodoModel::setFilters(QString filters)
 TodoModel *FilterTodoModel::getModel()
 {
     return &m_todoModel;
+}
+
+void FilterTodoModel::saveToFile()
+{
+    QString saveString;
+    foreach(sTodoInfo info, m_todoModel.m_dataContainer)
+    {
+        saveString.append(info.toString() + "\n");
+    }
+
+    QtConcurrent::run(bi::saveToFileSlow, saveString, saveFileAddress);
+}
+
+void FilterTodoModel::loadFromFile()
+{
+    foreach(const QString &todo , bi::loadFromFileSlow(saveFileAddress).split('\n'))
+    {
+        sTodoInfo info;
+        if(info.fromString(todo))
+            m_todoModel.m_dataContainer.push_back(info);
+    }
+}
 }

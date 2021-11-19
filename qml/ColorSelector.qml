@@ -48,7 +48,7 @@ Rectangle{
             id: resetButton
             text: qsTr("Reset")
             anchors.horizontalCenter: parent.horizontalCenter
-            onClicked: root.colorSelected("#d3d3d3")
+            onClicked: root.colorSelected("white")
         }
     }
 }

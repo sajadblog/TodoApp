@@ -10,11 +10,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-find_package(QT NAMES Qt5 COMPONENTS Core Quick REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick REQUIRED)
+find_package(QT NAMES Qt5 COMPONENTS Core Quick Concurrent REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick Concurrent REQUIRED)
 set( LIBRARIES
     PRIVATE Qt${QT_VERSION_MAJOR}::Core
     PRIVATE Qt${QT_VERSION_MAJOR}::Quick
+    PRIVATE Qt${QT_VERSION_MAJOR}::Concurrent
     )
 set(PROJECT_SOURCES
     main.cpp
@@ -24,6 +25,7 @@ set(PROJECT_SOURCES
 set(PROJECT_HEADERS
     include/Structs.h
     include/Enums.h
+    include/qt-assignment/FileHelper.hpp
     include/TodoApp.h
     include/TodoModel.h
     )

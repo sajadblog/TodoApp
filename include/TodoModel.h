@@ -6,6 +6,7 @@
 #include <QVector>
 #include "Structs.h"
 
+namespace Todo {
 class TodoModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -16,7 +17,7 @@ public:
         completedRole,
         DescriptionRole,
         BackgroundRole
-        };
+    };
 
     explicit TodoModel(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const ;
@@ -43,8 +44,12 @@ public:
 public slots:
     void setFilters(QString filters);
     TodoModel *getModel() ;
-    private :
+    void saveToFile();
+    void loadFromFile();
+
+private :
     TodoModel m_todoModel;
     QStringList m_filterList{};
 };
+}
 #endif // TODOMODEL_H

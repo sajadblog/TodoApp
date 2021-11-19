@@ -2,6 +2,7 @@
 #define ENUMS_H
 
 #include <stdint.h>
+namespace Todo {
 
 enum class eTodoPriority : uint8_t{
     none = 0,
@@ -9,5 +10,6 @@ enum class eTodoPriority : uint8_t{
     medium,
     low
 };
+}
 
 #endif // ENUMS_H
