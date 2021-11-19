@@ -2,12 +2,14 @@
 #define TODOMODEL_H
 
 #include <QAbstractListModel>
+#include <QSortFilterProxyModel>
 #include <QVector>
 #include "Structs.h"
 
 class TodoModel : public QAbstractListModel
 {
     Q_OBJECT
+    friend class FilterTodoModel;
 public:
     enum eFieldRoles : uint16_t{
         PriorityRole = Qt::UserRole + 1,
@@ -30,4 +32,19 @@ private :
     QVector<sTodoInfo> m_dataContainer;
 };
 
+class FilterTodoModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+    Q_PROPERTY(TodoModel* model READ getModel)
+public:
+    FilterTodoModel(QObject *parent = nullptr);
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+
+public slots:
+    void setFilters(QString filters);
+    TodoModel *getModel() ;
+    private :
+    TodoModel m_todoModel;
+    QStringList m_filterList{};
+};
 #endif // TODOMODEL_H

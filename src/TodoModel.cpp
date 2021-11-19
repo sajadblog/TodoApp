@@ -73,3 +73,39 @@ bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int rol
     }
     return true;
 }
+
+FilterTodoModel::FilterTodoModel(QObject *parent):
+    QSortFilterProxyModel(parent)
+{
+    setSourceModel(&m_todoModel);
+}
+
+bool FilterTodoModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+{
+    if(m_filterList.isEmpty()) return true;
+    foreach(const QString &filter , m_filterList)
+    {
+        if(m_todoModel.m_dataContainer[sourceRow].description.contains(filter, Qt::CaseInsensitive)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void FilterTodoModel::setFilters(QString filters)
+{
+    m_filterList.clear();
+    foreach(const QString &filter , filters.split(' '))
+    {
+        if(!filter.isEmpty())
+            m_filterList.append(filter);
+    }
+
+    m_todoModel.beginResetModel();
+    m_todoModel.endResetModel();
+}
+
+TodoModel *FilterTodoModel::getModel()
+{
+    return &m_todoModel;
+}

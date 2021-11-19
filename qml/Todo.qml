@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import TodoModel 1.0
+import FilterTodoModel 1.0
 Item {
     id: innerSpace
     anchors.fill: parent
@@ -21,23 +21,32 @@ Item {
             text: qsTr("submit")
             background: Rectangle {color: "#e0e0e0"; radius: 5;}
             onClicked: {
-                todoModel.addItem(newTaskTextField.text)
+                filterTodoModel.model.addItem(newTaskTextField.text)
                 newTaskTextField.text = ""
             }
         }
+    }
+    TextField{
+        id : filterTextField
+        width: parent.width
+        anchors.top: newTaskPanel.bottom
+        anchors.topMargin: innerSpace.anchors.margins
+        placeholderText : qsTr("Filters")
+        background: Rectangle { border.color: "blue"; border.width: 2;}
+        onTextChanged: filterTodoModel.setFilters(text)
     }
 
     ListView{
         anchors{
             fill: parent
-            topMargin: newTaskPanel.height + innerSpace.anchors.margins
+            topMargin: newTaskPanel.height + filterTextField.height + 2 * innerSpace.anchors.margins
         }
         spacing : innerSpace.anchors.margins
-        model: TodoModel{ id: todoModel}
+        model: FilterTodoModel{ id: filterTodoModel}
         clip: true
         delegate: TodoItem{
             width: parent.width
-            onRemoveMe: todoModel.removeItem(index)
+            onRemoveMe: filterTodoModel.model.removeItem(index)
             onEditMe: colorSelector.currentRow = index
         }
     }
@@ -46,7 +55,7 @@ Item {
         id: colorSelector
         anchors.centerIn: parent
         onColorSelected: {
-            todoModel.updateBackground(currentRow, newColor )
+            filterTodoModel.model.updateBackground(currentRow, newColor )
             currentRow = -1
         }
     }
