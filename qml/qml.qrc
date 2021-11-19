@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Todo.qml</file>
+        <file>TodoItem.qml</file>
+        <file>ColorSelector.qml</file>
+    </qresource>
+</RCC>
